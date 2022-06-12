@@ -45,5 +45,5 @@ appendedDf$scores_industry_income <- appendedDf$scores_industry_income %>% repla
 appendedDf$scores_international_outlook <- appendedDf$scores_international_outlook %>% replace_na(0)
 appendedDf$stats_student_staff_ratio <- appendedDf$stats_student_staff_ratio%>% replace_na(0)
 appendedDf$stats_female_male_ratio <- appendedDf$stats_female_male_ratio %>% replace_na('none')
-glimpse(appendedDf)
+
 write.csv(appendedDf,"THE.csv")

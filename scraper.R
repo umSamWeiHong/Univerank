@@ -32,7 +32,6 @@ table5 <- within(table5, remove(cta_button, courses_button))
 appendedDf <- rbind(table1, table2, table3, table4, table5)
 appendedDf <- appendedDf[ -c(1,5,7,9,11,13,15,16,17,18,19,25,26,27,28,29,30) ]
 
-appendedDf$rank = as.numeric(gsub("[\\=,]", "", appendedDf$rank))
 appendedDf$stats_number_students = as.numeric(gsub("[\\,,]", "", appendedDf$stats_number_students))
 appendedDf$stats_pc_intl_students = as.numeric(gsub("[\\%,]", "", appendedDf$stats_pc_intl_students))
 colnames(appendedDf)[12] <- "international students (%)"
@@ -46,5 +45,5 @@ appendedDf$scores_industry_income <- appendedDf$scores_industry_income %>% repla
 appendedDf$scores_international_outlook <- appendedDf$scores_international_outlook %>% replace_na(0)
 appendedDf$stats_student_staff_ratio <- appendedDf$stats_student_staff_ratio%>% replace_na(0)
 appendedDf$stats_female_male_ratio <- appendedDf$stats_female_male_ratio %>% replace_na('none')
-
+glimpse(appendedDf)
 write.csv(appendedDf,"THE.csv")

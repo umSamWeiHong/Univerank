@@ -30,11 +30,12 @@ table4 <- within(table4, remove(cta_button, courses_button))
 table5 <- within(table5, remove(cta_button, courses_button))
 
 appendedDf <- rbind(table1, table2, table3, table4, table5)
-appendedDf <- appendedDf[ -c(1,5,7,9,11,13,15,16,17,18,19,25,26,27,28,29,30) ]
+appendedDf <- appendedDf[ -c(1,5,7,9,11,13,15,17,18,19,25,26,27,28,29,30) ]
 
 appendedDf$stats_number_students = as.numeric(gsub("[\\,,]", "", appendedDf$stats_number_students))
 appendedDf$stats_pc_intl_students = as.numeric(gsub("[\\%,]", "", appendedDf$stats_pc_intl_students))
-colnames(appendedDf)[12] <- "international_students_percentage"
+colnames(appendedDf)[13] <- "international_students_percentage"
+
 cols.num <- c("scores_teaching","scores_research","scores_citations","scores_industry_income","scores_international_outlook","stats_student_staff_ratio")
 appendedDf[cols.num] <- sapply(appendedDf[cols.num], as.numeric)
 

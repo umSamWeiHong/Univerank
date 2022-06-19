@@ -32,8 +32,8 @@ table5 <- within(table5, remove(cta_button, courses_button))
 appendedDf <- rbind(table1, table2, table3, table4, table5)
 appendedDf <- appendedDf[ -c(1,5,7,9,11,13,15,17,18,19,25,26,27,28,29,30) ]
 
-appendedDf$rank = (gsub("[\\=,]", "", appendedDf$rank))
 appendedDf$rank = (gsub("[\\+,]", "", appendedDf$rank))
+appendedDf$rank = (gsub("[\\=,]", "", appendedDf$rank))
 appendedDf$rank = sub("(^[^-]+)—.*", "\\1", appendedDf$rank)
 appendedDf$rank = sub("(^[^-]+)-.*", "\\1", appendedDf$rank)
 appendedDf$rank = sub("(^[^-]+)–.*", "\\1", appendedDf$rank)

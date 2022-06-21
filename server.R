@@ -22,6 +22,13 @@ getTHEMetricsPlot <- function(university, overall, teaching, research, citations
     select(name, year, scores_overall, scores_teaching, scores_research, scores_citations, scores_international_outlook, scores_industry_income)
   print(df)
   
+  # Return an empty plot with text if university is not found.
+    if (nrow(df) == 0)
+      return (ggplot() +
+                annotate("text", x = 4, y = 25, size = 8, colour = "red",
+                        label = "University is not found. Try other options.") + 
+                theme_void())
+
   plot <- ggplot(data = df, aes(x = year)) +
     ggtitle(paste("THE Metric Scores of", university, "against Year")) +
     xlab("year") +
@@ -75,8 +82,8 @@ getTHEComparisonPlot <- function(universities, year,
   
   plot <- ggplot(data = df) +
     ggtitle(paste("Comparison of THE Metric Scores in year", currentYear)) +
-    xlab("metric") +
-    ylab("score")
+    xlab("score") +
+    ylab("metric")
   
   limits = c()
   

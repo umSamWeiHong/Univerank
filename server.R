@@ -49,6 +49,7 @@ getTHEMetricsPlot <- function(university, overall, teaching, research, citations
               "Industry Income" = "blueviolet")
   
   plot <- plot +
+    theme(plot.title = element_text(hjust = 0.5)) +
     scale_color_manual(values = colours)
   
   return(plot)

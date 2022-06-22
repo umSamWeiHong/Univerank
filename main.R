@@ -4,6 +4,20 @@ library(tidyverse)
 
 qs <- read.csv("data/QS.csv")
 the <- read.csv("data/THE.csv")
+conversion <- read.csv("data/conversion.csv")
+location <- read.csv("data/location.csv")
+
+getLocation <- function(university) {
+  locationString <- location %>%
+    filter(University == university) %>%
+    select(Location)
+  
+  if (nrow(locationString) == 0)
+    return("")
+  
+  locationString <- paste(university, " is located at ", locationString[1, 1], ".", sep="")
+  return(locationString)
+}
 
 getQSMetricsPlot <- function(university, overall, academic_reputation, employer_reputation, faculty_student_ratio,
                              citations_per_faculty, international_faculty_ratio, international_students_ratio) {
@@ -98,13 +112,29 @@ addMetricLine <- function(plot, year, metricData, metric) {
 }
 
 getRankingComparisonPlot <- function(university, QS, THE) {
+  qs_name <- university
+  if (QS & THE) {
+    qs_name <- conversion %>%
+      filter(QS == university | THE == university) %>%
+      select(QS)
+    qs_name <- qs_name[1, 1]
+  }
+  
   df_qs <- qs %>%
-    filter(University == university) %>%
+    filter(University == qs_name) %>%
     select(University, Year, Ranking)
   print(df_qs)
 
+  the_name <- university
+  if (QS & THE) {
+    the_name <- conversion %>%
+      filter(QS == university | THE == university) %>%
+      select(THE)
+    the_name <- the_name[1, 1]
+  }
+
   df_the <- the %>%
-    filter(name == university) %>%
+    filter(name == the_name) %>%
     select(name, year, rank)
   print(df_the)
     
@@ -128,8 +158,8 @@ getRankingComparisonPlot <- function(university, QS, THE) {
               geom_line(data = df_qs, mapping = aes(x = Year, y = Ranking, color = "QS"), size = 2) +
               geom_text(
                 data = df_qs,
-                aes(x = Year, y = Ranking, label = Ranking, color = "QS", fontface = "bold"),
-                nudge_y = 0.5
+                aes(x = Year, y = Ranking, label = Ranking, fontface = "bold"),
+                nudge_y = 1
               )
     colours <- append(colours, c("QS" = "coral"))
   }
@@ -146,8 +176,8 @@ getRankingComparisonPlot <- function(university, QS, THE) {
               geom_line(data = df_the, mapping = aes(x = year, y = rank, colour = "THE"), size = 2) +
               geom_text(
                 data = df_the,
-                aes(x = year, y = rank, label = rank, colour = "THE", fontface = "bold"),
-                nudge_y = 0.5
+                aes(x = year, y = rank, label = rank, fontface = "bold"),
+                nudge_y = 1
               )
     colours <- append(colours, c("THE" = "darkturquoise"))
   }
@@ -155,14 +185,72 @@ getRankingComparisonPlot <- function(university, QS, THE) {
   plot <- plot +
     theme(plot.title = element_text(hjust = 0.5)) +
     labs(colour = "Ranking System") +
-    scale_colour_manual(values = colours)
-    # scale_y_reverse()
+    scale_colour_manual(values = colours) +
+    scale_y_reverse()
   
   return(plot)
 }
 
-getQSComparisonPlot <- function(universities, year) {
+getQSComparisonPlot <- function(universities, year, overall,
+                                academic_reputation, employer_reputation, faculty_student_ratio,
+                                citations_per_faculty, international_faculty_ratio, international_students_ratio) {
+  df <- qs %>%
+    filter((University %in% universities) & Year == year) %>% 
+    select(University, Year, Overall.Score, Academic.Reputation, Employer.Reputation, Faculty.Student.Ratio,
+           Citations.per.Faculty, International.Faculty.Ratio, International.Students.Ratio)
+  print(df)
+
+  # Return an empty plot with text if university is not found.
+  if (nrow(df) == 0)
+    return (ggplot() +
+              annotate("text", x = 4, y = 25, size = 8, colour = "red",
+                       label = "University is not found. Try other options.") + 
+              theme_void())
+
+  plot <- ggplot(data = df, aes(x = Year)) +
+    ggtitle(paste("Comparison of QS Metric Scores in year", year)) +
+    xlab("score") +
+    ylab("metric")
+
+  limits <- c()
+
+  if (overall) {
+    plot <- addMetricBar(plot, universities, year, df$Overall.Score, "Overall")
+    limits <- c(limits, "Overall")
+  }
+  if (academic_reputation) {
+    plot <- addMetricBar(plot, universities, year, df$Academic.Reputation, "Academic Reputation")
+    limits <- c(limits, "Academic Reputation")
+  }
+  if (employer_reputation) {
+    plot <- addMetricBar(plot, universities, year, df$Employer.Reputation, "Employer Reputation")
+    limits <- c(limits, "Employer Reputation")
+  }
+  if (faculty_student_ratio) {
+    plot <- addMetricBar(plot, universities, year, df$Faculty.Student.Ratio, "Faculty Student Ratio")
+    limits <- c(limits, "Faculty Student Ratio")
+  }
+  if (citations_per_faculty) {
+    plot <- addMetricBar(plot, universities, year, df$Citations.per.Faculty, "Citations per Faculty")
+    limits <- c(limits, "Citations per Faculty")
+  }
+  if (international_faculty_ratio) {
+    plot <- addMetricBar(plot, universities, year, df$International.Faculty.Ratio, "International Faculty Ratio")
+    limits <- c(limits, "International Faculty Ratio")
+  }
+  if (international_students_ratio) {
+    plot <- addMetricBar(plot, universities, year, df$International.Students.Ratio, "International Students Ratio")
+    limits <- c(limits, "International Students Ratio")
+  }
+
+  print(limits)
   
+  plot <- plot +
+    scale_y_discrete(limits = rev(limits)) +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(legend.position = "bottom")
+
+  return(plot)
 }
 
 getTHEComparisonPlot <- function(universities, year,
@@ -231,6 +319,49 @@ addMetricBar <- function(plot, universities, year, metricData, metric) {
   return(plot)
 }
 
+getQSCountryComparisonPlot <- function(country, year, showRanking, start = 0, end = 10) {
+  df <- qs %>%
+    filter(Location == country & Year == year) %>%
+    select(University, Ranking, Overall.Score) %>%
+    arrange(desc(Ranking)) %>%
+    tail(end) %>%
+    head(end-start+1)
+  print(df)
+  
+  # Return an empty plot with text if country is not found.
+  if (nrow(df) == 0)
+    return (ggplot() +
+              annotate("text", x = 4, y = 25, size = 8, colour = "red",
+                       label = "Country is not found. Try other options.") + 
+              theme_void())
+  
+  if (showRanking) {    
+    plot <- ggplot(data = df, aes(x = Ranking, y = University)) +
+      ggtitle(paste("QS Rankings of Universities of", country, "in Year", year)) +
+      xlab('ranking') +
+      ylab('university') +
+      geom_bar(aes(fill = University), size = 2, stat = "identity") +
+      geom_text(aes(label = Ranking, fontface = "bold")) +
+      scale_y_discrete(limits = df$University)
+  } else {
+    df <- df %>%
+      arrange(Ranking) %>%
+      filter(!is.na(Overall.Score))
+    plot <- ggplot(data = df, aes(x = University, y = Overall.Score)) +
+      ggtitle(paste("QS Overall Scores of Universities of", country, "in Year", year)) +
+      xlab('university') +
+      ylab('overall score') +
+      geom_bar(aes(fill = University), size = 2, stat = "identity") +
+      geom_text(aes(label = Overall.Score, fontface = "bold"), nudge_y = 1) +
+      scale_x_discrete(limits = df$University, label = function(x) stringr::str_trunc(x, 30)) +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  }
+  plot <- plot +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(legend.position = "none")
+  return(plot)
+}
+
 getTHECountryComparisonPlot <- function(country, year, showRanking, start = 0, end = 10) {
   current_year = year
   df <- the %>%
@@ -257,7 +388,8 @@ getTHECountryComparisonPlot <- function(country, year, showRanking, start = 0, e
       geom_text(aes(label = rank, fontface = "bold")) +
       scale_y_discrete(limits = df$name)
   } else {
-    df <- df %>% arrange(desc(scores_overall))
+    df <- df %>%
+      arrange(desc(scores_overall))
     plot <- ggplot(data = df, aes(x = name, y = scores_overall)) +
       ggtitle(paste("THE Overall Scores of Universities of", country, "in Year", year)) +
       xlab('university') +
@@ -273,9 +405,12 @@ getTHECountryComparisonPlot <- function(country, year, showRanking, start = 0, e
   return(plot)
 }
 
-# getTHEComparisonPlot(c('University of Malaya', 'Universiti Kebangsaan Malaysia', 'Universiti Sains Malaysia'), 2018, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
+# tested
+# getQSMetricsPlot('Universiti Kebangsaan Malaysia (UKM)', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
 # getTHEMetricsPlot('Universiti Kebangsaan Malaysia', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-# getRankingComparisonPlot("University of Cambridge", TRUE, TRUE)
-# getQSMetricsPlot('Universiti Kebangsaan Malaysia (UKM)', TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE)
-# getQSMetricsPlot('Universiti Malaya (UM)', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-getTHECountryComparisonPlot('Malaysia', 2018, FALSE, 1, 8)
+# getQSCountryComparisonPlot('Malaysia', 2021, TRUE, 1, 12)
+# getTHECountryComparisonPlot('Malaysia', 2018, FALSE, 1, 8)
+# getQSComparisonPlot(c('Universiti Malaya (UM)', 'Universiti Kebangsaan Malaysia (UKM)', 'Universiti Sains Malaysia (USM)'), 2018,
+#                     TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
+# getTHEComparisonPlot(c('University of Malaya', 'Universiti Kebangsaan Malaysia', 'Universiti Sains Malaysia'), 2018, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
+# getRankingComparisonPlot("Universiti Putra Malaysia", TRUE, TRUE)

@@ -158,8 +158,7 @@ getRankingComparisonPlot <- function(university, QS, THE) {
               geom_line(data = df_qs, mapping = aes(x = Year, y = Ranking, color = "QS"), size = 2) +
               geom_text(
                 data = df_qs,
-                aes(x = Year, y = Ranking, label = Ranking, fontface = "bold"),
-                nudge_y = 1
+                aes(x = Year, y = Ranking, label = Ranking, fontface = "bold")
               )
     colours <- append(colours, c("QS" = "coral"))
   }
@@ -176,8 +175,7 @@ getRankingComparisonPlot <- function(university, QS, THE) {
               geom_line(data = df_the, mapping = aes(x = year, y = rank, colour = "THE"), size = 2) +
               geom_text(
                 data = df_the,
-                aes(x = year, y = rank, label = rank, fontface = "bold"),
-                nudge_y = 1
+                aes(x = year, y = rank, label = rank, fontface = "bold")
               )
     colours <- append(colours, c("THE" = "darkturquoise"))
   }

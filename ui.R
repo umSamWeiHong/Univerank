@@ -1,6 +1,7 @@
 library(shiny)
 library(shinythemes)
 library(readr)
+library(bslib)
 library(DT)
 library(tools)
 
@@ -8,26 +9,74 @@ qs <- read.csv("data/QS.csv")
 the <- read.csv("data/THE.csv")
 
 # Define UI for application that plots features of University Ranking
-fluidPage(
+navbarPage(
   theme = bs_theme(bootswatch = "united"),
   
   titlePanel("Univerank - Get all University Rankings!", windowTitle = "University Ranking"),
   
-  sidebarLayout(
+  tabPanel(
+    "Ranking Comparisons",
+    sidebarLayout(
+      sidebarPanel(
+        checkboxInput("ranking_comparison_QS", "Show QS Ranking"),
+        checkboxInput("ranking_comparison_THE", "Show THE Ranking"),
+        selectInput("ranking_comparison_university_name", "University",
+                    NULL),
+      ),
+      mainPanel(
+        plotOutput("ranking_comparison")
+      )
+    )
+  ),
+  tabPanel(
+    "Second tab name",
     sidebarPanel(
       textInput("txt", "Text input:", "text here"),
       sliderInput("slider", "Slider input:", 1, 100, 30),
-      actionButton("action", "Button"),
-      actionButton("action2", "Button2", class = "btn-primary")
+      actionButton("action", "Button")
     ),
-    
     mainPanel(
-      tabsetPanel(
-        tabPanel("Tab 1"),
-        tabPanel("Tab 2")
-      )
+
+    )
+  ),
+  tabPanel(
+    "Second tab name",
+    sidebarPanel(
+      textInput("txt", "Text input:", "text here"),
+      sliderInput("slider", "Slider input:", 1, 100, 30),
+      actionButton("action", "Button")
+    ),
+    mainPanel(
+
+    )
+  ),
+  tabPanel(
+    "Second tab name",
+    sidebarPanel(
+      textInput("txt", "Text input:", "text here"),
+      sliderInput("slider", "Slider input:", 1, 100, 30),
+      actionButton("action", "Button")
+    ),
+    mainPanel(
+
     )
   )
+  
+  # sidebarLayout(
+  #   sidebarPanel(
+  #     textInput("txt", "Text input:", "text here"),
+  #     sliderInput("slider", "Slider input:", 1, 100, 30),
+  #     actionButton("action", "Button"),
+  #     actionButton("action2", "Button2", class = "btn-primary")
+  #   ),
+  # 
+  #   mainPanel(
+  #     tabsetPanel(
+  #       tabPanel("Tab 1"),
+  #       tabPanel("Tab 2", plotOutput("ranking_comparison"))
+  #     )
+  #   )
+  # )
 
   # 
   # 

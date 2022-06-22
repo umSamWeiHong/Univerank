@@ -4,9 +4,8 @@ library(readr)
 library(DT)
 library(tools)
 
-#dataWIE <- read.csv("C:/Users/atjar/Downloads/THE.csv")
-qs <- read.csv("C:/Users/atjar/Downloads/QS.csv")
-the <- read.csv("C:/Users/atjar/Downloads/THE.csv")
+qs <- read.csv("data/QS.csv")
+the <- read.csv("data/THE.csv")
 
 # Define UI for application that plots features of University Ranking
 ui <- fluidPage(theme = bslib::bs_theme(bootswatch = "superhero"),
@@ -99,27 +98,27 @@ ui <- fluidPage(theme = bslib::bs_theme(bootswatch = "superhero"),
                   )
                 )
 )
-
-# Reference server to display ui(To be modified by sam)
-server <- function(input, output, session) {
-  
-  # Display data table when box is checked
-  observeEvent(input$show_data, {
-    if(input$show_data){
-      showTab(inputId = "tabspanel", target = "Data", select = TRUE)
-    } else {
-      hideTab(inputId = "tabspanel", target = "Data")
-    }
-  })
-  
- # output$tester<-renderPlot({
-    
-  #})
-    
-
-  
-  
-}
-
-# Create Shiny app object
-shinyApp(ui = ui, server = server )
+# 
+# # Reference server to display ui(To be modified by sam)
+# server <- function(input, output, session) {
+#   
+#   # Display data table when box is checked
+#   observeEvent(input$show_data, {
+#     if(input$show_data){
+#       showTab(inputId = "tabspanel", target = "Data", select = TRUE)
+#     } else {
+#       hideTab(inputId = "tabspanel", target = "Data")
+#     }
+#   })
+#   
+#  # output$tester<-renderPlot({
+#     
+#   #})
+#     
+# 
+#   
+#   
+# }
+# 
+# # Create Shiny app object
+# shinyApp(ui = ui, server = server )

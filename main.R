@@ -231,10 +231,48 @@ addMetricBar <- function(plot, universities, year, metricData, metric) {
   return(plot)
 }
 
-# getTHEComparisonPlot(c('University of Malaya', 'Universiti Kebangsaan Malaysia', 'Universiti Sains Malaysia'), 2018,
-                     # TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
+getTHECountryComparisonPlot <- function(country, year, showRanking, start = 0, end = 10) {
+  current_year = year
+  df <- the %>%
+    filter(location == country & year == current_year) %>%
+    select(name, rank, scores_overall) %>%
+    arrange(scores_overall) %>%
+    tail(end) %>%
+    head(end-start+1)
+  print(df)
+  
+  # Return an empty plot with text if country is not found.
+  if (nrow(df) == 0)
+    return (ggplot() +
+              annotate("text", x = 4, y = 25, size = 8, colour = "red",
+                       label = "Country is not found. Try other options.") + 
+              theme_void())
+  
+  if (showRanking) {
+    plot <- ggplot(data = df, aes(x = rank, y = name)) +
+      ggtitle(paste("THE Rankings of Universities of", country, "in Year", year)) +
+      xlab('ranking') +
+      geom_bar(aes(fill = name), size = 2, stat = "identity") +
+      geom_text(aes(label = rank, fontface = "bold"))
+  } else {
+    plot <- ggplot(data = df, aes(x = scores_overall, y = name)) +
+      ggtitle(paste("THE Overall Scores of Universities of", country, "in Year", year)) +
+      xlab('overall score') +
+      geom_bar(aes(fill = name), size = 2, stat = "identity") +
+      geom_text(aes(label = scores_overall, fontface = "bold"))
+  }
+  plot <- plot +
+    ylab('university') +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(legend.position = "none") +
+    scale_y_discrete(limits = df$name)
+  return(plot)
+}
+
+# getTHEComparisonPlot(c('University of Malaya', 'Universiti Kebangsaan Malaysia', 'Universiti Sains Malaysia'), 2018, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
 # getTHEMetricsPlot('Universiti Kebangsaan Malaysia', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-getRankingComparisonPlot("University of Cambridge", TRUE, TRUE)
+# getRankingComparisonPlot("University of Cambridge", TRUE, TRUE)
 # getQSMetricsPlot('Universiti Kebangsaan Malaysia (UKM)', TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE)
 # getQSMetricsPlot('Universiti Malaya (UM)', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
+getTHECountryComparisonPlot('Malaysia', 2018, FALSE, 0, 2)
 

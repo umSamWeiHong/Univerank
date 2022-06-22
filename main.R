@@ -56,6 +56,7 @@ getQSMetricsPlot <- function(university, overall, academic_reputation, employer_
               "International Students Ratio" = "darkmagenta")
 
   plot <- plot +
+    theme(plot.title = element_text(hjust = 0.5)) +
     scale_color_manual(values = colours)
 
   return(plot)

@@ -5,9 +5,6 @@ library(bslib)
 library(DT)
 library(tools)
 
-qs <- read.csv("data/QS.csv")
-the <- read.csv("data/THE.csv")
-
 # Define UI for application that plots features of University Ranking
 navbarPage(
   theme = bs_theme(bootswatch = "united"),
@@ -15,13 +12,12 @@ navbarPage(
   titlePanel("Univerank - Get all University Rankings!", windowTitle = "University Ranking"),
   
   tabPanel(
-    "Ranking Comparisons",
+    "Ranking Comparison",
     sidebarLayout(
       sidebarPanel(
         checkboxInput("ranking_comparison_QS", "Show QS Ranking"),
         checkboxInput("ranking_comparison_THE", "Show THE Ranking"),
-        selectInput("ranking_comparison_university_name", "University",
-                    NULL),
+        selectInput("ranking_comparison_university_name", "University", NULL),
       ),
       mainPanel(
         plotOutput("ranking_comparison")
@@ -29,14 +25,16 @@ navbarPage(
     )
   ),
   tabPanel(
-    "Second tab name",
-    sidebarPanel(
-      textInput("txt", "Text input:", "text here"),
-      sliderInput("slider", "Slider input:", 1, 100, 30),
-      actionButton("action", "Button")
-    ),
-    mainPanel(
-
+    "Metric Comparison",
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("metric_comparison_ranking_system", "Ranking System", list('QS', 'THE')),
+        selectInput("metric_comparison_university_name", "University", NULL),
+        checkboxGroupInput("metric_comparison_metrics", "Metrics", NULL),
+      ),
+      mainPanel(
+        plotOutput("metric_comparison")
+      )
     )
   ),
   tabPanel(

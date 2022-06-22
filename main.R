@@ -191,17 +191,17 @@ getRankingComparisonPlot <- function(university, QS, THE) {
   return(plot)
 }
 
-getQSComparisonPlot <- function(universities, year, overall,
-                                academic_reputation, employer_reputation, faculty_student_ratio,
-                                citations_per_faculty, international_faculty_ratio, international_students_ratio) {
+getQSUniversityComparisonPlot <- function(universities, year, overall,
+                                          academic_reputation, employer_reputation, faculty_student_ratio,
+                                          citations_per_faculty, international_faculty_ratio, international_students_ratio) {
   df <- qs %>%
     filter((University %in% universities) & Year == year) %>% 
     select(University, Year, Overall.Score, Academic.Reputation, Employer.Reputation, Faculty.Student.Ratio,
            Citations.per.Faculty, International.Faculty.Ratio, International.Students.Ratio)
   print(df)
 
-  # Return an empty plot with text if university is not found.
-  if (nrow(df) == 0)
+  # Return an empty plot with text if some universities is not found.
+  if (nrow(df) != length(universities))
     return (ggplot() +
               annotate("text", x = 4, y = 25, size = 8, colour = "red",
                        label = "University is not found. Try other options.") + 
@@ -253,15 +253,15 @@ getQSComparisonPlot <- function(universities, year, overall,
   return(plot)
 }
 
-getTHEComparisonPlot <- function(universities, year,
-                                 overall, teaching, research, citations, international_outlook, industry_income) {
+getTHEUniversityComparisonPlot <- function(universities, year,
+                                           overall, teaching, research, citations, international_outlook, industry_income) {
   currentYear <- year
   df <- the %>%
     filter((name %in% universities) & year == currentYear) %>% 
     select(name, scores_overall, scores_teaching, scores_research, scores_citations, scores_international_outlook, scores_industry_income)
   print(df)
   
-  # Return an empty plot with text if some data is missing
+  # Return an empty plot with text if some universities is not found.
   if (nrow(df) != length(universities))
     return (ggplot() +
               annotate("text", x = 4, y = 25, size = 8, colour = "red",
@@ -347,6 +347,9 @@ getQSCountryComparisonPlot <- function(country, year, showRanking, start = 0, en
     df <- df %>%
       arrange(Ranking) %>%
       filter(!is.na(Overall.Score))
+    if (nrow(df) == 0)
+      return(ggplot())
+      
     plot <- ggplot(data = df, aes(x = University, y = Overall.Score)) +
       ggtitle(paste("QS Overall Scores of Universities of", country, "in Year", year)) +
       xlab('university') +
@@ -410,7 +413,7 @@ getTHECountryComparisonPlot <- function(country, year, showRanking, start = 0, e
 # getTHEMetricsPlot('Universiti Kebangsaan Malaysia', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
 # getQSCountryComparisonPlot('Malaysia', 2021, TRUE, 1, 12)
 # getTHECountryComparisonPlot('Malaysia', 2018, FALSE, 1, 8)
-# getQSComparisonPlot(c('Universiti Malaya (UM)', 'Universiti Kebangsaan Malaysia (UKM)', 'Universiti Sains Malaysia (USM)'), 2018,
-#                     TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-# getTHEComparisonPlot(c('University of Malaya', 'Universiti Kebangsaan Malaysia', 'Universiti Sains Malaysia'), 2018, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
+# getQSUniversityComparisonPlot(c('Universiti Malaya (UM)', 'Universiti Kebangsaan Malaysia (UKM)', 'Universiti Sains Malaysia (USM)'), 2018,
+#                               TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
+# getTHEUniversityComparisonPlot(c('University of Malaya', 'Universiti Kebangsaan Malaysia', 'Universiti Sains Malaysia'), 2018, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
 # getRankingComparisonPlot("Universiti Putra Malaysia", TRUE, TRUE)

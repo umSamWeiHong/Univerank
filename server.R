@@ -79,6 +79,43 @@ shinyServer(function(input, output, session) {
     updateSliderInput(inputId = "country_comparison_number",
                       max = nrow(df))
   })
+  observeEvent(input$university_comparison_ranking_system, {
+    if (input$university_comparison_ranking_system == 'QS') {
+      updateSelectInput(inputId = "university_comparison_university_name1",
+                        choices = QS_unique_university_names)
+      updateSelectInput(inputId = "university_comparison_university_name2",
+                        choices = QS_unique_university_names)
+      updateSelectInput(inputId = "university_comparison_university_name3",
+                        choices = QS_unique_university_names)
+      updateCheckboxGroupInput(inputId = "university_comparison_metrics",
+                               choices = list("Overall",
+                                              "Academic Reputation",
+                                              "Employer Reputation",
+                                              "Faculty Student Ratio",
+                                              "Citations per Faculty",
+                                              "International Faculty Ratio",
+                                              "International Students Ratio"))
+    }
+    if (input$university_comparison_ranking_system == 'THE') {
+      updateSelectInput(inputId = "university_comparison_university_name1",
+                        choices = THE_unique_university_names)
+      updateSelectInput(inputId = "university_comparison_university_name2",
+                        choices = THE_unique_university_names)
+      updateSelectInput(inputId = "university_comparison_university_name3",
+                        choices = THE_unique_university_names)
+      updateCheckboxGroupInput(inputId = "university_comparison_metrics",
+                               choices = list("Overall",
+                                              "Research",
+                                              "Teaching",
+                                              "Citations",
+                                              "International Outlook",
+                                              "Industry Income"))
+    }
+  })
+  
+  output$documentation <- renderText(
+    "To be completed"
+  )
   
   output$description <- renderText(
     getLocation(input$ranking_comparison_university_name)
@@ -95,6 +132,10 @@ shinyServer(function(input, output, session) {
   
   output$country_comparison <- renderPlot(
     getCountryComparisonPlot(input)
+  )
+  
+  output$university_comparison <- renderPlot(
+    getUniversityComparisonPlot(input)
   )
 })
 
@@ -150,6 +191,52 @@ getCountryComparisonPlot <- function(input) {
   }
   if (ranking_system == 'THE') {
     plot <- getTHECountryComparisonPlot(country, year, show_ranking, start, end)
+    return(plot)
+  }
+}
+
+getUniversityComparisonPlot <- function(input) {
+  ranking_system <- input$university_comparison_ranking_system
+  university_name1 <- input$university_comparison_university_name1
+  university_name2 <- input$university_comparison_university_name2
+  university_name3 <- input$university_comparison_university_name3
+  year <- input$university_comparison_year
+  metrics <- input$university_comparison_metrics
+  
+  
+  if (length(metrics) == 0)
+    return(ggplot())
+  
+  universities <- NULL
+  
+  if (!is.null(university_name1)) universities <- append(universities, university_name1)
+  if (!is.null(university_name2)) universities <- append(universities, university_name2)
+  if (!is.null(university_name3)) universities <- append(universities, university_name3)
+  
+  if (ranking_system == 'QS') {
+    overall <- "Overall" %in% metrics
+    academic_reputation <- "Academic Reputation" %in% metrics
+    employer_reputation <- "Employer Reputation" %in% metrics
+    faculty_student_ratio <- "Faculty Student Ratio" %in% metrics
+    citations_per_faculty <- "Citations per Faculty" %in% metrics
+    international_faculty_ratio <- "International Faculty Ratio" %in% metrics
+    international_students_ratio <- "International Students Ratio" %in% metrics
+    
+    plot <- getQSUniversityComparisonPlot(universities, year, overall,
+                                          academic_reputation, employer_reputation, faculty_student_ratio,
+                                          citations_per_faculty, international_faculty_ratio, international_students_ratio)
+    return(plot)
+  }
+  if (ranking_system == 'THE') {
+    overall <- "Overall" %in% metrics
+    teaching <- "Research" %in% metrics
+    research <- "Teaching" %in% metrics
+    citations <- "Citations" %in% metrics
+    international_outlook <- "International Outlook" %in% metrics
+    industry_income <- "Industry Income" %in% metrics
+    
+    plot <- getTHEUniversityComparisonPlot(universities, year,
+                                           overall, teaching, research, citations, international_outlook, industry_income)
     return(plot)
   }
 }

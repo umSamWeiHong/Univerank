@@ -53,4 +53,9 @@ appendedDf$stats_student_staff_ratio <- appendedDf$stats_student_staff_ratio %>%
 appendedDf$international_students_percentage <- appendedDf$international_students_percentage %>% replace_na(0)
 appendedDf$stats_female_male_ratio <- appendedDf$stats_female_male_ratio %>% replace_na('none')
 
+newTable <- appendedDf[appendedDf$location == 'Malaysia', ]
+nameTHE <- as.data.frame(newTable[,2], drop=false)
+uniqueNameTHE <- as.data.frame(unique(nameTHE))
+
+write.csv(uniqueNameTHE, "uniqueNameTHE.csv")
 write.csv(appendedDf,"THE.csv")

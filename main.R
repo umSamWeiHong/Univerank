@@ -252,20 +252,24 @@ getTHECountryComparisonPlot <- function(country, year, showRanking, start = 0, e
     plot <- ggplot(data = df, aes(x = rank, y = name)) +
       ggtitle(paste("THE Rankings of Universities of", country, "in Year", year)) +
       xlab('ranking') +
+      ylab('university') +
       geom_bar(aes(fill = name), size = 2, stat = "identity") +
-      geom_text(aes(label = rank, fontface = "bold"))
+      geom_text(aes(label = rank, fontface = "bold")) +
+      scale_y_discrete(limits = df$name)
   } else {
-    plot <- ggplot(data = df, aes(x = scores_overall, y = name)) +
+    df <- df %>% arrange(desc(scores_overall))
+    plot <- ggplot(data = df, aes(x = name, y = scores_overall)) +
       ggtitle(paste("THE Overall Scores of Universities of", country, "in Year", year)) +
-      xlab('overall score') +
+      xlab('university') +
+      ylab('overall score') +
       geom_bar(aes(fill = name), size = 2, stat = "identity") +
-      geom_text(aes(label = scores_overall, fontface = "bold"))
+      geom_text(aes(label = scores_overall, fontface = "bold"), nudge_y = 1) +
+      scale_x_discrete(limits = df$name, label = function(x) stringr::str_trunc(x, 30)) +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
   }
   plot <- plot +
-    ylab('university') +
     theme(plot.title = element_text(hjust = 0.5)) +
-    theme(legend.position = "none") +
-    scale_y_discrete(limits = df$name)
+    theme(legend.position = "none")
   return(plot)
 }
 
@@ -274,5 +278,4 @@ getTHECountryComparisonPlot <- function(country, year, showRanking, start = 0, e
 # getRankingComparisonPlot("University of Cambridge", TRUE, TRUE)
 # getQSMetricsPlot('Universiti Kebangsaan Malaysia (UKM)', TRUE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE)
 # getQSMetricsPlot('Universiti Malaya (UM)', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-getTHECountryComparisonPlot('Malaysia', 2018, FALSE, 0, 2)
-
+getTHECountryComparisonPlot('Malaysia', 2018, FALSE, 1, 8)

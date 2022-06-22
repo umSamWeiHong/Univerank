@@ -38,14 +38,18 @@ navbarPage(
     )
   ),
   tabPanel(
-    "Second tab name",
-    sidebarPanel(
-      textInput("txt", "Text input:", "text here"),
-      sliderInput("slider", "Slider input:", 1, 100, 30),
-      actionButton("action", "Button")
-    ),
-    mainPanel(
-
+    "Country Comparison",
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("country_comparison_ranking_system", "Ranking System", list('QS', 'THE')),
+        selectInput("country_comparison_country", "Country", NULL),
+        sliderInput("country_comparison_year", "Year", 2017, 2021, value = 2021, step = 1),
+        sliderInput("country_comparison_number", "Top n universitites", 1, 50, value = c(1, 5), step = 1),
+        radioButtons("country_comparison_show_ranking", "Show", choices = list('Ranking', 'Overall Score'))
+      ),
+      mainPanel(
+        plotOutput("country_comparison")
+      )
     )
   ),
   tabPanel(

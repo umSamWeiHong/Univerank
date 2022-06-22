@@ -11,6 +11,9 @@ QS_unique_university_names <- (qs %>% select(University) %>% distinct() %>% arra
 THE_unique_university_names <- (the %>% select(name) %>% distinct() %>% arrange(name))$name
 malaysia_university_names <- (conversion %>% arrange(THE))$THE
 
+QS_unique_country_names <- (qs %>% select(Location) %>% distinct() %>% arrange(Location))$Location
+THE_unique_country_names <- (the %>% select(location) %>% distinct() %>% arrange(location))$location
+
 shinyServer(function(input, output, session) {
   observeEvent(input$ranking_comparison_QS, {
     if (input$ranking_comparison_QS) {
@@ -58,6 +61,30 @@ shinyServer(function(input, output, session) {
                                               "Industry Income"))
     }
   })
+  observeEvent(input$country_comparison_ranking_system, {
+    if (input$country_comparison_ranking_system == 'QS') {
+      updateSelectInput(inputId = "country_comparison_country",
+                        choices = QS_unique_country_names)
+    }
+    if (input$country_comparison_ranking_system == 'THE') {
+      updateSelectInput(inputId = "country_comparison_country",
+                        choices = THE_unique_country_names)
+    }
+  })
+  observeEvent(input$country_comparison_country, {
+    df <- qs %>%
+      filter(Location == input$country_comparison_country 
+             & Year == input$country_comparison_year)
+    updateSliderInput(inputId = "country_comparison_number",
+                      max = nrow(df))
+  })
+  observeEvent(input$country_comparison_year, {
+    df <- qs %>%
+      filter(Location == input$country_comparison_country 
+             & Year == input$country_comparison_year)
+    updateSliderInput(inputId = "country_comparison_number",
+                      max = nrow(df))
+  })
   
   output$ranking_comparison <- renderPlot(
     getRankingComparisonPlot(input$ranking_comparison_university_name,
@@ -67,12 +94,16 @@ shinyServer(function(input, output, session) {
   output$metric_comparison <- renderPlot(
     getMetricComparisonPlot(input)
   )
+  
+  output$country_comparison <- renderPlot(
+    getCountryComparisonPlot(input)
+  )
 })
 
 getMetricComparisonPlot <- function(input) {
-  ranking_system = input$metric_comparison_ranking_system
-  university_name = input$metric_comparison_university_name
-  metrics = input$metric_comparison_metrics
+  ranking_system <- input$metric_comparison_ranking_system
+  university_name <- input$metric_comparison_university_name
+  metrics <- input$metric_comparison_metrics
   
   if (ranking_system == 'QS') {
     overall <- "Overall" %in% metrics
@@ -101,4 +132,26 @@ getMetricComparisonPlot <- function(input) {
   }
 }
 
-
+getCountryComparisonPlot <- function(input) {
+  ranking_system <- input$country_comparison_ranking_system
+  country <- input$country_comparison_country
+  year <- input$country_comparison_year
+  start <- input$country_comparison_number[1]
+  end <- input$country_comparison_number[2]
+  print(start)
+  print(end)
+  
+  if ('Ranking' %in% input$country_comparison_show_ranking)
+    show_ranking <- TRUE
+  else
+    show_ranking <- FALSE
+  
+  if (ranking_system == 'QS') {
+    plot <- getQSCountryComparisonPlot(country, year, show_ranking, start, end)
+    return(plot)
+  }
+  if (ranking_system == 'THE') {
+    plot <- getTHECountryComparisonPlot(country, year, show_ranking, start, end)
+    return(plot)
+  }
+}

@@ -16,6 +16,7 @@ getLocation <- function(university) {
     return("")
   
   locationString <- paste(university, " is located at ", locationString[1, 1], ".", sep="")
+  print(locationString)
   return(locationString)
 }
 

@@ -15,11 +15,11 @@ navbarPage(
     "Ranking Comparison",
     sidebarLayout(
       sidebarPanel(
-        checkboxInput("ranking_comparison_QS", "Show QS Ranking"),
-        checkboxInput("ranking_comparison_THE", "Show THE Ranking"),
+        checkboxGroupInput("ranking_comparison_ranking_system", "Ranking System", list('QS', 'THE')),
         selectInput("ranking_comparison_university_name", "University", NULL),
       ),
       mainPanel(
+        verbatimTextOutput("description"),
         plotOutput("ranking_comparison")
       )
     )

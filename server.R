@@ -15,27 +15,21 @@ QS_unique_country_names <- (qs %>% select(Location) %>% distinct() %>% arrange(L
 THE_unique_country_names <- (the %>% select(location) %>% distinct() %>% arrange(location))$location
 
 shinyServer(function(input, output, session) {
-  observeEvent(input$ranking_comparison_QS, {
-    if (input$ranking_comparison_QS) {
-      if (input$ranking_comparison_THE)
-        updateSelectInput(inputId = "ranking_comparison_university_name",
-                          choices = malaysia_university_names)
-      else
-        updateSelectInput(inputId = "ranking_comparison_university_name",
-                          choices = QS_unique_university_names)
+  observeEvent(input$ranking_comparison_ranking_system, {
+    if ('QS' %in% input$ranking_comparison_ranking_system) {
+      updateSelectInput(inputId = "ranking_comparison_university_name",
+                        choices = QS_unique_university_names)
+    }
+    if ('THE' %in% input$ranking_comparison_ranking_system) {
+      updateSelectInput(inputId = "ranking_comparison_university_name",
+                        choices = THE_unique_university_names)
+    }
+    if ('QS' %in% input$ranking_comparison_ranking_system 
+        & 'THE' %in% input$ranking_comparison_ranking_system) {
+      updateSelectInput(inputId = "ranking_comparison_university_name",
+                        choices = malaysia_university_names)
     }
   })
-  observeEvent(input$ranking_comparison_THE, {
-    if (input$ranking_comparison_THE) {
-      if (input$ranking_comparison_QS) 
-        updateSelectInput(inputId = "ranking_comparison_university_name",
-                          choices = malaysia_university_names)
-      else
-        updateSelectInput(inputId = "ranking_comparison_university_name",
-                          choices = THE_unique_university_names)
-    }
-  })
-  
   observeEvent(input$metric_comparison_ranking_system, {
     if (input$metric_comparison_ranking_system == 'QS') {
       updateSelectInput(inputId = "metric_comparison_university_name",
@@ -86,10 +80,14 @@ shinyServer(function(input, output, session) {
                       max = nrow(df))
   })
   
+  output$description <- renderText(
+    getLocation(input$ranking_comparison_university_name)
+  )
+  
   output$ranking_comparison <- renderPlot(
     getRankingComparisonPlot(input$ranking_comparison_university_name,
-                             input$ranking_comparison_QS,
-                             input$ranking_comparison_THE))
+                             'QS' %in% input$ranking_comparison_ranking_system,
+                             'THE' %in% input$ranking_comparison_ranking_system))
   
   output$metric_comparison <- renderPlot(
     getMetricComparisonPlot(input)

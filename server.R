@@ -14,6 +14,35 @@ malaysia_university_names <- (conversion %>% arrange(THE))$THE
 QS_unique_country_names <- (qs %>% select(Location) %>% distinct() %>% arrange(Location))$Location
 THE_unique_country_names <- (the %>% select(location) %>% distinct() %>% arrange(location))$location
 
+documentation <- 
+"This manual is structured to ensure that users have a complete idea using our application.
+
+Ranking Comparison
+In this section, users can compare the change of a university's rankings from 2017 to 2021.
+1. Select a ranking system of QS or THE. If both are chosen, then only Malaysia universities will be available.
+2. Select an university present in the chosen ranking system(s).
+
+Metric Comparison
+In this section, users can compare the change of a university's metric scores from 2017 to 2021.
+1. Select a ranking system of either QS or THE.
+2. Select an university present in the chosen ranking system.
+3. Select the metric(s) to be displayed on the plot.
+
+University Comparison
+In this section, users can compare three different universities' metric scores in a specified year.
+1. Select a ranking system of either QS or THE.
+2. Select three different universities present in the chosen ranking system.
+3. Choose a year where the scores are taken.
+4. Select the metric(s) to be displayed on the plot.
+
+Country Comparison
+In this section, users can compare the ranking or overall scores of top n universies in a specified country and year.
+1. Select a ranking system of either QS or THE.
+2. Select a country present in the chosen ranking system.
+3. Choose a year where the rankings are taken.
+4. Select the range of n, that is the top n universities to be shown.
+5. Select whether to display the ranking or overall scores on the plot."
+
 shinyServer(function(input, output, session) {
   observeEvent(input$ranking_comparison_ranking_system, {
     if ('QS' %in% input$ranking_comparison_ranking_system) {
@@ -113,9 +142,7 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$documentation <- renderText(
-    "To be completed"
-  )
+  output$documentation <- renderText(documentation)
   
   output$description <- renderText(
     getLocation(input$ranking_comparison_university_name)

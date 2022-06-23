@@ -75,7 +75,7 @@ navbarPage(
         
       ),
       mainPanel(
-        textOutput("documentation")
+        verbatimTextOutput("documentation")
       )
     )
   )

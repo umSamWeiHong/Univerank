@@ -1,0 +1,126 @@
+
+
+Univerank
+========================================================
+author: Group 10: NoExcel
+autosize: true
+<font face= "Times New Roman">
+
+1. JARED AVINESH THOMAS (S2132601)
+2. MUHYUDDIN AHSAN SULTAN ASKIN (S2119272)
+3. DAMIA FATIHAH BINTI IMRAN (U2001010)
+4. SAM WEI HONG (U2102776)
+
+#### Shiny App: https://um-samweihong.shinyapps.io/univerank/
+#### Github: https://github.com/umSamWeiHong/Univerank
+</font>
+Introduction
+========================================================
+left: 100%
+
+
+## Problem Statement
+
+<font size="5">
+###### There are many university ranking systems that are widely available such as the Times Higher Education University Ranking and also QS University Ranking.
+###### However, it is difficult for students to make comparisons based on different metrics that exist across different systems.
+</font>
+
+<font size="5">
+## Hypothesis
+###### If users can compare with all possible metrics, it will make them better informed in choosing their university.
+
+## Approach
+###### Creating an interactive experience which generates charts and dashboards for users to visualize comparisons better.
+</font>
+
+Development of App
+========================================================
+left: 51%
+autosize: 20%
+
+<font size="5">
+**Back-end Development** 
+- Datasets which are the QS University Ranking and Times Higher Education Ranking systems were utilized.
+- Plotting of features based on ranking, metric, university and country is done on server.R
+- Plots will be displayed based on the user's input and preferences
+
+**Front-end Development** 
+- Layout and appearance of our app is done on ui.R
+
+**Integration**
+- Integration of the front-end and back-end were done and executed on Shiny for optimal user experience.
+</font>
+
+
+Description of Application
+========================================================
+left: 51%
+
+<font size="5">
+
+## Homepage
+- Users are greeted with an accesible homepage that immediately gives users the ability to look for the ranking of a university in the 2 systems.
+
+```{r, echo=FALSE, out.width="80%"}
+
+knitr::include_graphics("C:/Users/Administrator/Documents/noexcelUM.jpg")
+```
+
+```{r, echo=FALSE, out.width="60%"}
+
+knitr::include_graphics("C:/Users/Administrator/Documents/noexcel3.jpg")
+```
+***
+## List of Application Features
+- Users have the ability to visit different pages based on different options.
+  - Ranking comparisons.
+  - Metric comparisons.
+  - University comparisons.
+  - Country comparisons.
+- Users can select and deselect metrics to use in comparison for a more personlized experience.
+
+
+```{r, echo=FALSE, out.width="60%"}
+
+knitr::include_graphics("C:/Users/Administrator/Documents/noexcel2.jpg")
+```
+
+
+</font>
+
+Summary of Experience
+========================================================
+left: 51%
+autosize: true
+ 
+
+## End-product
+- The prototype of this application worked better than expected by visualizing the data for those who are interested in viewing it.
+- Extra implementations such as ranking by subject could be implemented for a more layered analysis.
+
+## Challenges
+- Shiny is a new application to us therefore we struggled at some parts.
+- Hurdles such as errors in code were unavoidable but managed to be debugged in time.
+
+
+Key Takeaways
+========================================================
+left: 51%
+autosize: true
+ 
+
+**Acknowledgement of possible solution to problem** 
+- Different metrics are often messy and are hard to draw comparisons with one another.
+- Our application makes it easy for user to see in-depth information on how universities are ranked.
+
+***
+
+**Suggestions for the Future** 
+- A centralized ranking system that have unified metrics will be more impactful.
+- Metrics should be more friendly to laypeople who do not have deep understanding of data.
+
+
+
+
+

@@ -64,3 +64,42 @@ Some of the dataset features include:
     - International co-authorship (International Publications / Publications Total)
 
 - **International outlook** - Research income from industry & commerce / Academic Staff
+
+## Documentation
+This manual is structured to ensure that users have a complete idea using our application. It can be also found in the application.
+
+### Ranking Comparison
+In this section, users can compare the change of a university's rankings from 2017 to 2021.
+1. Select a ranking system of QS or THE. If both are chosen, then only Malaysia universities will be available.
+2. Select an university present in the chosen ranking system(s).
+
+![Ranking Comparison](https://github.com/umSamWeiHong/Univerank/blob/master/img/ranking_comparison.PNG)
+
+### Metric Comparison
+In this section, users can compare the change of a university's metric scores from 2017 to 2021.
+1. Select a ranking system of either QS or THE.
+2. Select an university present in the chosen ranking system.
+3. Select the metric(s) to be displayed on the plot.
+
+![Metric Comparison](https://github.com/umSamWeiHong/Univerank/blob/master/img/metric_comparison.PNG)
+
+### University Comparison
+In this section, users can compare three different universities' metric scores in a specified year.
+1. Select a ranking system of either QS or THE.
+2. Select three different universities present in the chosen ranking system.
+3. Choose a year where the scores are taken.
+4. Select the metric(s) to be displayed on the plot.
+
+![University Comparison](https://github.com/umSamWeiHong/Univerank/blob/master/img/university_comparison.PNG)
+
+### Country Comparison
+In this section, users can compare the ranking or overall scores of top n universies in a specified country and year.
+1. Select a ranking system of either QS or THE.
+2. Select a country present in the chosen ranking system.
+3. Choose a year where the rankings are taken.
+4. Select the range of n, that is the top n universities to be shown.
+5. Select whether to display the ranking or overall scores on the plot.
+
+![Country Comparison Ranking](https://github.com/umSamWeiHong/Univerank/blob/master/img/country_comparison_ranking.PNG)
+
+![Country Comparison Scores](https://github.com/umSamWeiHong/Univerank/blob/master/img/country_comparison_scores.PNG)
